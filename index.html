@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8" />
+		<title>淘宝直播登录页面</title>
+		<link rel="stylesheet" type="text/css" href="css/Login.css" />
+		<script>
+			/*验证用户名和密码*/
+			function checkUser() {
+				var userName = document.getElementById("name").value;
+				var userPwd = document.getElementById("pwd").value;
+				if("wanxiang" == userName && "123456" == userPwd) {
+					window.location.href = "main_page.html";
+				} else if(userName == ""){
+					alert("请输入用户名");
+				} else if (userPwd == "") {
+					alert("请输入密码");
+				} else if(userName != "wanxiang"){
+					alert("账号不存在！");
+				} else if(userPwd != "123456") {
+					alert("密码输入错误，请重输！");
+				}
+
+			}
+		</script>
+	</head>
+
+	<body>
+		<div id="login">
+			<h1>用户登录</h1>
+			<form action="www.baidu.com" method="post">
+				<table>
+					<tr>
+						<td>
+							<input id="name" type="text" placeholder="用户名" name="uname">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input id="pwd" type="password" placeholder="密码" name="upwd">
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!--<button type="submit" class="but" onclick="checkUser()">登录</button>-->
+							<button type="button" class="but" onclick="checkUser()">登录</button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+
+	</body>
+
+</html>

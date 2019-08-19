@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>主播数据统计页面</title>
+		<link rel="stylesheet" href="css/main_page.css" />
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="js/code.js"></script>
+		<script type="text/javascript">
+			$.ajax({
+				type: "get",
+				url: "http://wanxiangsmart.gnway.cc:36517/ZhiBoAPP/ws/rest/mainService/getAppStatus",
+				data: "name=admin",
+				success: function(msg) {
+					//					var obj = jQuery.parseJSON(msg);
+					//					var resultJsonArr = obj.resultJSON.appStatus;
+
+					var resultJsonArr = msg.resultJSON.appStatus;
+					var tBodyNode = document.createElement("tbody");
+					for(var i = 0; i < resultJsonArr.length; i++) {
+
+						var name = resultJsonArr[i].name;
+						var lastHeartTime = resultJsonArr[i].lastHeartTime;
+						console.log(name);
+						console.log(lastHeartTime);
+
+						var tdNode1 = document.createElement("td");
+						var tdNode2 = document.createElement("td");
+
+						tdNode1.innerHTML = name;
+						tdNode2.innerHTML = lastHeartTime;
+
+						var trNode = document.createElement("tr");
+
+						//获取当前时间戳
+						var nowTime = new Date().getTime();
+
+						//将最后一次心跳时间与当前时间对比，大于5分钟就将心跳时间置为红色
+						//获取某个时间格式的时间戳
+						var lastHeartTimeMliis = Date.parse(lastHeartTime);
+
+						var noBeatTime = nowTime - lastHeartTimeMliis;
+						if(noBeatTime > 5 * 60 * 1000) {
+							trNode.setAttribute("class", "redfont");
+							tdNode1.innerHTML = name + "(已挂)";
+						}
+
+						//如果最后一次心跳时间为默认值时，不添加此设备到表格中
+						if(lastHeartTime != "1970-01-01 09:00:00") {
+							trNode.appendChild(tdNode1);
+							trNode.appendChild(tdNode2);
+							tBodyNode.appendChild(trNode);
+							//将tr行加入表格中
+							document.getElementById("tableP").appendChild(tBodyNode);
+						}
+
+					}
+				},
+				async: true
+			});
+
+			$.ajax({
+				type: "get",
+				//				url: "http://127.0.0.1:8020/TaobaoLive/anchorInfo.txt",
+				url: "http://wanxiangsmart.gnway.cc:36517/ZhiBoAPP/ws/rest/mainService/getZhuBoCount",
+				data: "name=admin",
+				success: function(msg) {
+					//					var obj = jQuery.parseJSON(msg);
+					//					var resultJsonArr = obj.resultJSON.zhubocounts;
+
+					var resultJsonArr = msg.resultJSON.zhubocounts;
+					var tBodyNode = document.createElement("tbody");
+
+					//最多统计1000条数据，大于1000显示最新1000条数据
+					if(resultJsonArr.length > 1000) {
+						var startPosition = resultJsonArr.length - 1000;
+
+					} else {
+						var startPosition = 0;
+					}
+
+					//截取数组最后1000条数据
+					resultJsonArr = resultJsonArr.slice(startPosition, resultJsonArr.length);
+
+					for(var i = 0; i < resultJsonArr.length; i++) {
+						var fensi = resultJsonArr[i].fensi;
+						var renqi = resultJsonArr[i].renqi;
+						var roomID = resultJsonArr[i].roomID;
+						var zaixian = resultJsonArr[i].zaixian;
+						var zhuboname = resultJsonArr[i].zhuboname;
+
+						var trNode2 = document.createElement("tr");
+
+						var tdNode_c1 = document.createElement("td");
+						var tdNode_c2 = document.createElement("td");
+						var tdNode_c3 = document.createElement("td");
+						var tdNode_c4 = document.createElement("td");
+						var tdNode_c5 = document.createElement("td");
+						var tdNode_c6 = document.createElement("td");
+
+						tdNode_c1.innerHTML = i + 1;
+						tdNode_c2.innerHTML = zhuboname;
+						tdNode_c3.innerHTML = renqi;
+						tdNode_c4.innerHTML = roomID;
+						tdNode_c5.innerHTML = zaixian;
+						tdNode_c6.innerHTML = fensi;
+
+						trNode2.appendChild(tdNode_c1);
+						trNode2.appendChild(tdNode_c2);
+						trNode2.appendChild(tdNode_c3);
+						trNode2.appendChild(tdNode_c4);
+						trNode2.appendChild(tdNode_c5);
+						trNode2.appendChild(tdNode_c6);
+
+						tBodyNode.appendChild(trNode2);
+
+						//将tr行加入表格中
+						document.getElementById("anchorTable").appendChild(tBodyNode);
+					}
+				},
+				async: true
+			});
+
+
+			function init() { 
+				console.log("token------"+sessionStorage.token);
+				if(sessionStorage.token) {
+					hideElement('anchorDiv');
+				} else {
+					hideElement('mainDiv');
+					document.write("登录失败，请重新登录")
+				}
+			}
+
+			function getData() {
+				var data = localStorage.getItem("key");
+				var data2 = sessionStorage.clickcount;
+				var data3 = sessionStorage.getItem("key");
+				alert("存储的数据是：" + data3);
+			}
+
+			function showHeartBeat() {
+				showElement("cc");
+				hideElement("anchorDiv");
+			}
+
+			function showAnchorInfo() {
+				hideElement("cc");
+				showElement("anchorDiv");
+			}
+
+			//组件的显示
+			function showElement(targetid) {
+				if(document.getElementById) {
+					target = document.getElementById(targetid);
+					target.style.display = "block";
+				}
+			}
+
+			//组件的隐藏
+			function hideElement(targetid) {
+				if(document.getElementById) {
+					target = document.getElementById(targetid);
+					target.style.display = "none";
+				}
+			}
+
+			function setData() {
+				for(var i = 0; i < 20; i++) {
+					var trNode2 = document.createElement("tr");
+
+					var tdNode_c1 = document.createElement("td");
+					var tdNode_c2 = document.createElement("td");
+					var tdNode_c3 = document.createElement("td");
+					var tdNode_c4 = document.createElement("td");
+					var tdNode_c5 = document.createElement("td");
+					var tdNode_c6 = document.createElement("td");
+
+					tdNode_c1.innerHTML = i + 1;
+					tdNode_c2.innerHTML = "zhuboname";
+					tdNode_c3.innerHTML = "renqi";
+					tdNode_c4.innerHTML = "roomID";
+					tdNode_c5.innerHTML = "zaixian";
+					tdNode_c6.innerHTML = "fensi";
+
+					trNode2.appendChild(tdNode_c1);
+					trNode2.appendChild(tdNode_c2);
+					trNode2.appendChild(tdNode_c3);
+					trNode2.appendChild(tdNode_c4);
+					trNode2.appendChild(tdNode_c5);
+					trNode2.appendChild(tdNode_c6);
+
+					tBodyNode.appendChild(trNode2);
+
+					//将tr行加入表格中
+					document.getElementById("anchorTable").appendChild(tBodyNode);
+				}
+			}
+		</script>
+		<script type="text/javascript" src="js/TableSorter.js"></script>
+	</head>
+
+	<body onload="init()">
+		<div id="mainDiv">
+			<center>
+				<h1>智媛淘宝直播数据展示界面</h1>
+			</center>
+			<center>
+				<ul id="nav">
+					<li>
+						<a onclick="showHeartBeat()" style="cursor: pointer;">机器人状态监测</a>
+					</li>
+					<li>
+						<a onclick="showAnchorInfo()" style="cursor: pointer;">主播信息统计</a>
+					</li>
+				</ul>
+			</center>
+			<div id="container">
+
+				<div id="heartDiv">
+					<center id="cc">
+						<center>
+							<p>Tips:当机器人停止心跳时间大于5分钟，说明机器人已挂掉，字体会被标红，需操作人员手动重启app（机器人正常心跳频率：每分钟一次）</p>
+						</center>
+						<table width="80%" id="tableP">
+							<thead>
+								<tr>
+									<th onclick="$.sortTable.sort('tableP',0)" style="cursor: pointer;">设备名</th>
+									<th onclick="$.sortTable.sort('tableP',1)" style="cursor: pointer;">最后一次心跳时间</th>
+								</tr>
+							</thead>
+						</table>
+					</center>
+				</div>
+				<center>
+					<div id="anchorDiv">
+						<center>
+							<p>Tips:点击表格标题栏可对当前列进行排序</p>
+						</center>
+						<table id="anchorTable" width="80%">
+							<thead>
+								<tr>
+									<th onclick="$.sortTable.sort('anchorTable',0)" style="cursor: pointer;">序号</th>
+									<th onclick="$.sortTable.sort('anchorTable',1)" style="cursor: pointer;">主播名</th>
+									<th onclick="$.sortTable.sort('anchorTable',2)" style="cursor: pointer;">人气</th>
+									<th onclick="$.sortTable.sort('anchorTable',3)" style="cursor: pointer;">房间ID</th>
+									<th onclick="$.sortTable.sort('anchorTable',4)" style="cursor: pointer;">在线人数</th>
+									<th onclick="$.sortTable.sort('anchorTable',5)" style="cursor: pointer;">粉丝数</th>
+								</tr>
+							</thead>
+						</table>
+					</div>
+				</center>
+			</div>
+		</div>
+	</body>
+
+</html>

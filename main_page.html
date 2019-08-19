@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>数据展示页</title>
+		<link rel="stylesheet" href="css/main_page.css" />
+		<script type="text/javascript" src="js/jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			$.ajax({
+				type: "get",
+				//								url: "http://192.168.1.84:8080/ZhiBoAPP/ws/rest/mainService/getAppStatus",
+				//				url: "http://wanxiangsmart.gnway.cc:36517/ZhiBoAPP/ws/rest/mainService/getAppStatus",
+				url: "http://127.0.0.1:8020/TaobaoLive/heartbeat.txt",
+				data: "name=admin",
+				success: function(msg) {
+					//					$('body').append("json====>>> " + msg);
+					var obj = jQuery.parseJSON(msg);
+					var resultJsonArr = obj.resultJSON.appStatus;
+//					var resultJsonArr = msg.resultJSON.appStatus;
+					for(var i = 0; i < resultJsonArr.length; i++) {
+
+						var name = resultJsonArr[i].name;
+						var lastHeartTime = resultJsonArr[i].lastHeartTime;
+						//						console.log(name);
+						//						console.log(lastHeartTime);
+
+						var tdNode1 = document.createElement("td");
+						var tdNode2 = document.createElement("td");
+
+						tdNode1.innerHTML = name;
+						tdNode2.innerHTML = lastHeartTime; 
+
+						var trNode = document.createElement("tr");
+
+						//获取当前时间戳
+						var nowTime = new Date().getTime();
+
+						//将最后一次心跳时间与当前时间对比，大于5分钟就将心跳时间置为红色
+						//获取某个时间格式的时间戳
+						var lastHeartTimeMliis = Date.parse(lastHeartTime);
+
+						var noBeatTime = nowTime - lastHeartTimeMliis;
+						if(noBeatTime > 5 * 60 * 1000) {
+							trNode.setAttribute("class", "redfont");
+							tdNode1.innerHTML = name + "(已挂)";
+						}
+
+						trNode.appendChild(tdNode1);
+						trNode.appendChild(tdNode2);
+
+						//将tr行加入表格中
+						document.getElementById("tableP").appendChild(trNode);
+					}
+				},
+				async: true
+			});
+
+			$.ajax({
+				type: "get",
+				url: "http://127.0.0.1:8020/TaobaoLive/anchorInfo.txt",
+				//				url: "http://192.168.1.84:8080/ZhiBoAPP/ws/rest/mainService/getZhuBoCount",
+				//				url: "http://wanxiangsmart.gnway.cc:36517/ZhiBoAPP/ws/rest/mainService/getZhuBoCount",
+				data: "name=admin",
+				success: function(msg) {
+					var obj = jQuery.parseJSON(msg);
+					var resultJsonArr = obj.resultJSON.zhubocounts;
+					//					var resultJsonArr = msg.resultJSON.zhubocounts;
+					for(var i = 0; i < resultJsonArr.length; i++) {
+
+						var fensi = resultJsonArr[i].fensi;
+						var renqi = resultJsonArr[i].renqi;
+						var roomID = resultJsonArr[i].roomID;
+						var zaixian = resultJsonArr[i].zaixian;
+						var zhuboname = resultJsonArr[i].zhuboname;
+
+						var tableNode = document.createElement("table");
+						tableNode.setAttribute("width", "100%");
+						tableNode.setAttribute("class", "anchorinfo");
+
+						var trNode2 = document.createElement("tr");
+
+						var tdNode_c1 = document.createElement("td");
+						var tdNode_c2 = document.createElement("td");
+						var tdNode_c3 = document.createElement("td");
+						var tdNode_c4 = document.createElement("td");
+						var tdNode_c5 = document.createElement("td");
+						var tdNode_c6 = document.createElement("td");
+
+						tdNode_c1.innerHTML = i+1;
+						tdNode_c2.innerHTML = zhuboname;
+						tdNode_c3.innerHTML = renqi;
+						tdNode_c4.innerHTML = roomID;
+						tdNode_c5.innerHTML = zaixian;
+						tdNode_c6.innerHTML = fensi;
+
+						//						tdNode_c2.setAttribute("class","redfont2");
+
+						trNode2.appendChild(tdNode_c1);
+						trNode2.appendChild(tdNode_c2);
+						trNode2.appendChild(tdNode_c3);
+						trNode2.appendChild(tdNode_c4);
+						trNode2.appendChild(tdNode_c5);
+						trNode2.appendChild(tdNode_c6);
+
+						//将tr行加入表格中
+						document.getElementById("anchorTable").appendChild(trNode2);
+					}
+				},
+				async: true
+			});
+
+			function showHeartBeat() {
+				//				alert("显示心跳");
+				showElement("cc");
+				hideElement("anchorDiv");
+			}
+
+			function showAnchorInfo() {
+				//				alert("显示主播数据");
+				hideElement("cc");
+				showElement("anchorDiv");
+			}
+
+			//组件的显示
+			function showElement(targetid) {
+				if(document.getElementById) {
+					target = document.getElementById(targetid);
+					target.style.display = "block";
+				}
+			}
+
+			//组件的隐藏
+			function hideElement(targetid) {
+				if(document.getElementById) {
+					target = document.getElementById(targetid);
+					target.style.display = "none";
+				}
+			}
+		</script>
+	</head>
+
+	<body onload="hideElement('anchorDiv')">
+		<center>
+			<h1>淘宝直播数据展示界面</h1>
+		</center>
+		<center>
+			<ul id="nav">
+				<li>
+					<a onclick="showHeartBeat()">机器人心跳</a>
+				</li>
+				<li>
+					<a onclick="showAnchorInfo()">主播信息统计</a>
+				</li>
+				<li>
+					<a href="http://www.wanxiangsmart.com/">关于我们</a>
+				</li>
+			</ul>
+		</center>
+		<div id="container">
+
+		</div>
+		<div id="heartDiv">
+			<center id="cc">
+				<table width="60%" id="tableP">
+					<tr>
+						<td>
+							<font style="font-weight: bold;">设备名</font>
+						</td>
+						<td>
+							<font style="font-weight: bold;">最后一次心跳时间</font>
+						</td>
+					</tr>
+				</table>
+			</center>
+		</div>
+		<center>
+			<div id="anchorDiv">
+				<table id="anchorTable" width="60%">
+					<tr>
+						<td><font style="font-weight: bold;">序号</font></td>
+						<td><font style="font-weight: bold;">主播名</font></td>
+						<td><font style="font-weight: bold;">人气</font></td>
+						<td><font style="font-weight: bold;">房间ID</font></td>
+						<td><font style="font-weight: bold;">在线人数</font></td>
+						<td><font style="font-weight: bold;">粉丝数</font></td>
+					</tr>
+				</table>
+			</div>
+		</center>
+	</body>
+
+</html>

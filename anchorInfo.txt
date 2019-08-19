@@ -1,0 +1,45 @@
+{
+    "error": {
+        "errorCode": "00000",
+        "errorDes": "操作处理成功"
+    },
+    "resultJSON": {
+        "zhubocounts": [
+            {
+                "fensi": 641000,
+                "renqi": 306000,
+                "roomID": "56954",
+                "zaixian": 11988,
+                "zhuboname": "韩国时尚潮搭"
+            },
+            {
+                "fensi": 148000,
+                "renqi": 441000,
+                "roomID": "56452",
+                "zaixian": 11994,
+                "zhuboname": "cynthia_Eva"
+            },
+            {
+                "fensi": 246000,
+                "renqi": 1579000,
+                "roomID": "53979",
+                "zaixian": 4951,
+                "zhuboname": "alma夏夏"
+            },
+            {
+                "fensi": 190000,
+                "renqi": 3181000,
+                "roomID": "57132",
+                "zaixian": 27598,
+                "zhuboname": "Minibaby婷妞酱"
+            },
+            {
+                "fensi": 641000,
+                "renqi": 307000,
+                "roomID": "56954",
+                "zaixian": 14296,
+                "zhuboname": "韩国时尚潮搭"
+            }
+          ]
+      }
+   }
